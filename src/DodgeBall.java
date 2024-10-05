@@ -26,6 +26,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	public static final int MAX_ENEMIES = 10;
 	public static final int WINDOW_HEIGHT = 600;
 	public static final int WINDOW_WIDTH = 300;
+	public int numTimes = 0;
 	
 	public void run() {
 		rgen = RandomGenerator.getInstance();
@@ -38,10 +39,16 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		movement = new Timer(MS, this);
 		movement.start();
 		addMouseListeners();
+		
+		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		numTimes++;
 		moveAllBallsOnce();
+		if(numTimes % 5 ==0) {
+			addAnEnemy();
+		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
