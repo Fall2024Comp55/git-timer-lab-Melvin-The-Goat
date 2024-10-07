@@ -26,7 +26,10 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	public static final int MAX_ENEMIES = 10;
 	public static final int WINDOW_HEIGHT = 600;
 	public static final int WINDOW_WIDTH = 300;
+	public static final int maxEnemies = 20;
 	public int numTimes = 0;
+	public int numEnemiesRemoved = 0;
+	public GLabel numEnemiesR = new GLabel("Enemies removed: " + numEnemiesRemoved);
 	
 	public void run() {
 		rgen = RandomGenerator.getInstance();
@@ -39,6 +42,9 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		movement = new Timer(MS, this);
 		movement.start();
 		addMouseListeners();
+		numEnemiesRemoved = 0;
+		numEnemiesR.setLocation(10,10);
+		add(numEnemiesR);
 		
 		
 	}
@@ -74,6 +80,13 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		balls.add(ball);
 	}
 	
+
+	public void addEnemiesRL() {
+		remove(numEnemiesR);
+		numEnemiesR = new GLabel("Enemies removed: " + numEnemiesRemoved);
+		numEnemiesR.setLocation(10,10);
+		add(numEnemiesR);
+	}
 	public GOval makeBall(double x, double y) {
 		GOval temp = new GOval(x-SIZE/2, y-SIZE/2, SIZE, SIZE);
 		temp.setColor(Color.RED);
@@ -81,11 +94,23 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		return temp;
 	}
 	
+	public void endGame() {
+		GLabel endL = new GLabel("Too many enemies" );
+		endL.setLocation(20, 20);
+		add(endL);
+		addEnemiesRL();
+		
+		//System.exit(0);
+	}
+	
 	private void addAnEnemy() {
 		GRect e = makeEnemy(rgen.nextInt(0, WINDOW_HEIGHT-SIZE/2));
 		enemies.add(e);
 		text.setLabel("" + enemies.size());
 		add(e);
+		if(enemies.size() > maxEnemies) {
+			//endGame();
+		}
 	}
 	
 	public GRect makeEnemy(double y) {
@@ -101,6 +126,9 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 			ball.move(SPEED, 0);
 			if((getElementAt(ball.getX() + ball.getWidth()+1, ball.getY() + ball.getHeight()/2)) != null) {
 				remove(getElementAt(ball.getX() + ball.getWidth()+1, ball.getY() + ball.getHeight()/2));
+				numEnemiesRemoved++;
+				System.out.println(numEnemiesRemoved);
+				addEnemiesRL();
 			}
 		}
 	}
